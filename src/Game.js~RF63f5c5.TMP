@@ -1,0 +1,132 @@
+brainVita.Game = function(game){
+    this. moves = 0;
+	this.lEdge = 2;
+	this.rEdge = 4;
+	this.board=[];
+	this.marbles=[];
+};
+
+brainVita.Game.prototype = {
+	create: function(){
+		this.createBoard();
+		this.addMarbles();
+        
+	},
+
+	createBoard: function(){
+		this.add.sprite(0, 0, 'background');
+		this.add.sprite(0, 0, 'board');
+		for(i=0; i<7; i++){
+				this.board[i] = new Array(7);
+				for(j=0; j<7; j++){
+					if((i < this.lEdge && j < this.lEdge) || // top-left
+						(i > this.rEdge && j < this.lEdge) || // bottom-left
+						(i < this.lEdge && j > this.rEdge) || // top-right
+						(i > this.rEdge && j > this.rEdge) )
+					{
+						this.board[i][j]=-1;
+					}
+					else
+					{
+						this.board[i][j]=1;
+					}
+				}
+			}
+	    this.board[3][3] = 0;
+	},
+
+    addMarbles: function(){
+		for(i=0; i<7; i++){
+			this.marbles[i] = new Array(7)
+			for(j=0; j<7; j++){    
+
+				if(this.board[i][j]==1)
+				{
+				 this.marbles[i][j]=this.add.sprite(60+j*70,50+i*72,'marble');
+
+				 this.marbles[i][j].inputEnabled=true;
+				 this.marbles[i][j].input.enableDrag();
+				 this.marbles[i][j].events.onDragStart.add(this.isEligibleCell,this);
+
+				
+	            }
+				  
+            }
+    
+        } 
+        //this.check();
+
+        },   
+	    	
+isEligibleCell:function(x,y) {
+		return this.getAvailableHoles(i,j).length > 0;
+       //this.getAvailableHoles(i,j);
+	    },
+
+	getAvailableHoles:function(x,y){
+		 this.holes = [];
+			 if(this.isCellExists(x, y-2)&& this.board[x][y-1]==1 ) 
+			 {
+			  this.holes.push({x:x, y: y-2});
+
+			  console.log("condition1");
+			}
+		    if( this.isCellExists(x, y+2) && this.board[x][y+1]==1) 
+			{ 
+				this.holes.push({x:x, y: y+2});
+				  console.log("condition1");
+	         }
+			if( this.isCellExists(x-2, y)  && this.board[x-1][y]==1) 
+			 {
+			 	this.holes.push({x:x-2, y: y});
+			 	  console.log("condition1");
+		     }   
+			 if(this.isCellExists(x+2, y) && this.board[x+1][y]==1 )
+			 { 
+			 	this.holes.push({x:x+2, y: y});  
+			 	  console.log("condition1");
+			 }
+			return this.holes; 
+
+	} ,
+
+
+		 isCellExists: function(x,y){ 
+		 	//val = this.board[x][y];
+
+		 	var val;
+		 	try{
+		 		val=board[x][y];
+		 		console.log(val);
+		 	}catch(e)
+		 	{
+		 		return false;
+		 	}
+		 	
+			
+			return true;
+			
+		},
+
+
+/*check : function(){
+	for(i=0; i<7; i++){
+			for(j=0; j<7; j++){   
+				
+				                	
+				}
+				  
+                  
+            }
+},*/
+
+
+
+};
+
+   
+
+    
+
+
+
