@@ -4,6 +4,7 @@ brainVita.Game = function(game){
 	this.rEdge = 4;
 	this.board=[];
 	this.marbles=[];
+	
 };
 
 brainVita.Game.prototype = {
@@ -56,15 +57,13 @@ brainVita.Game.prototype = {
         	for(i=0; i<7; i++){
 			for(j=0; j<7; j++){    
 				 if(this.isEligibleCell(i,j))
-				 {
-				 console.log("Eligiblecell  "+i +"   " +j); 	
+				 { 
+				 this.marbles[i][j].iIndex = i;
+				 this.marbles[i][j].jIndex = j;
 				 this.marbles[i][j].inputEnabled=true;
 				 this.marbles[i][j].input.enableDrag();
-				 if(this.marbles[i][j].input.isDragged)
-				 {
-				 	this.marbles[i][j+1].destroy();
-				 }
-
+			//	 this.marbles[i][j].events.onDragStart.add(this.onDragStart, this);
+				 this.marbles[i][j].events.onDragStop.add(this.onDragStop,this);
 				 }  
             }
     
@@ -72,6 +71,73 @@ brainVita.Game.prototype = {
        
 
         },
+
+    /*    onDragStart : function(sprite, pointer){
+ 
+            var iIndex = sprite.iIndex;
+            var jIndex = sprite.jIndex;
+            if(this.marbles[iIndex][jIndex].input.isDragged)
+				 {
+				 	this.marbles[iIndex][jIndex]=0;
+				 	if (iIndex+2<7 && this.board[iIndex+2][jIndex]==0) {
+				 		                                 this.marbles[iIndex+1][jIndex].destroy();
+				 	                                     this.board[iIndex+2][jIndex]=1;
+				 	                                     this.board[iIndex+1][jIndex]=0;
+				 	                                      }
+				 	if (jIndex+2<7 && this.board[iIndex][jIndex+2]==0) {
+				 		                                  this.marbles[iIndex][jIndex+1].destroy();
+				 	                                      this.board[iIndex][jIndex+2]=1;
+				 	                                      this.board[iIndex][jIndex+1]=0;}
+				 	if (iIndex-2>0 && this.board[iIndex-2][jIndex]==0) { 
+				 		                                  this.marbles[iIndex-1][jIndex].destroy();
+				 	                                      this.board[iIndex-2][jIndex]=1;
+				 	                                      this.board[iIndex-1][jIndex]=0;}
+				 	if (jIndex-2>0 && this.board[iIndex][jIndex-2]==0) {
+				 		                                 this.marbles[iIndex][jIndex-1].destroy();
+				 	                                     this.board[iIndex][jIndex-2]=1; 
+				 	                                     this.board[iIndex][jIndex-1]=0; } 
+				 } 
+        },*/
+
+        onDragStop : function(sprite,pointer) {
+            var iIndex = sprite.iIndex;
+            var jIndex = sprite.jIndex;
+        
+
+		    if (iIndex+2<6 && this.board[iIndex+2][jIndex]==0 && this.board[iIndex+1][jIndex]==1) {
+		    	                                        /* if (pointer.x>=50+jIndex*70 && pointer.x<=130+jIndex*70 && pointer.y>=188+iIndex*72
+		    	                                         	&& pointer.y<=288+iIndex*72) {
+		    	                                         	console.log("True1");
+		    	                                            sprite.reset(60+jIndex*70,50+(iIndex+2)*72); */
+		    	                                            this.board[iIndex+2][jIndex]=1;
+				 	                                        this.board[iIndex+1][jIndex]=0;
+		    	                                         	this.marbles[iIndex+1][jIndex].destroy();
+				 	                                    
+				 	                                    /*  } 
+				 	                                      else{
+				 		                                 sprite.reset(60+jIndex*70,50+iIndex*72);}
+				 	                                      } */
+		    if (jIndex+2<6 && this.board[iIndex][jIndex+2]==0 && this.board[iIndex][jIndex+1]==1) {
+		    	                                         this.board[iIndex][jIndex+2]=1;
+				 	                                      this.board[iIndex][jIndex+1]=0;
+				 		                                  this.marbles[iIndex][jIndex+1].destroy();
+				 	                                      }
+			if (iIndex-2>0 && this.board[iIndex-2][jIndex]==0 && this.board[iIndex-1][jIndex]==1) { 
+				                                          this.board[iIndex-2][jIndex]=1;
+				 	                                      this.board[iIndex-1][jIndex]=0;
+				 		                                  this.marbles[iIndex-1][jIndex].destroy();
+				 	                                       }
+				 	                                
+			if (jIndex-2>0 && this.board[iIndex][jIndex-2]==0  && this.board[iIndex][jIndex-1]==1) {
+				                                          this.board[iIndex][jIndex-2]=1; 
+				 	                                     this.board[iIndex][jIndex-1]=0;
+				 		                                 this.marbles[iIndex][jIndex-1].destroy();
+				 	                                     }
+				 	                               
+
+				 
+        },
+
 
 
 	    	
@@ -141,10 +207,21 @@ isEligibleCell:function(x,y) {
 			
 		},
 
+		isGameOver: function(){
+			var i,j;
+			for(i=0; i < 7; i++){
+				for(j=0; j < 7; j++){
+					if(this.board[i][j] == 1 && this.getAvailableHoles(i,j).length > 0){
+						return false;
+					}
+				}
+			}
+			return true;
+		},
+
 		update: function(){
 
 			this.renderBoard();
-
 			}
 };
 
